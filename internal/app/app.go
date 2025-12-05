@@ -83,7 +83,7 @@ func NewEchoApp(cfg *config.Config) (*App, error) {
 
 	grpcServer := grpcserver.NewAchievementsService(achievementsService)
 
-	lis, err := net.Listen("tcp", ":50057")
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal("failed to listen:", err)
 	}
@@ -91,7 +91,7 @@ func NewEchoApp(cfg *config.Config) (*App, error) {
 	s := grpc.NewServer()
 	achievements.RegisterAchievementsServiceServer(s, grpcServer)
 
-	log.Println("Starting gRPC server on port 50055")
+	log.Println("Starting gRPC server on port 50051")
 	if err := s.Serve(lis); err != nil {
 		log.Fatal("failed to serve:", err)
 	}
