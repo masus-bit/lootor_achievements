@@ -20,7 +20,6 @@ func NewAchievementsService(achievementsRepo *repositories.AchievementsRepositor
 }
 
 func (s *AchievementsService) AddOrUpdateAchievement(dto *achievements.AddOrUpdateAchievementRequest) (*achievements.AddOrUpdateAchievementResponse, error) {
-	fmt.Println(dto)
 	achievementItem, err := s.achievementsRepo.GetAchievementItem(dto.GetCode())
 	if err != nil {
 		return nil, fmt.Errorf("oшибка получения ориг ачивы: %v", err)
