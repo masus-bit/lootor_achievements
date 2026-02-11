@@ -16,11 +16,16 @@ func NewAchievementsRepository(db *gorm.DB) *AchievementsRepository {
 	return &AchievementsRepository{db: db}
 }
 
-func (r *AchievementsRepository) AddOrUpdateAchievement(achievement *models.AchievementsLinks) (*models.AchievementsLinks, error) {
+func (r *AchievementsRepository) AddOrUpdateAchievement(achievement *models.AchievementsLinks) (
+	*models.AchievementsLinks,
+	error,
+) {
 	var existing models.AchievementsLinks
 	err := r.db.
-		Where("user_login = ? AND achievement_code = ?",
-			achievement.UserLogin, achievement.AchievementCode).
+		Where(
+			"user_login = ? AND achievement_code = ?",
+			achievement.UserLogin, achievement.AchievementCode,
+		).
 		First(&existing).Error
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -76,7 +81,10 @@ func (r *AchievementsRepository) AddOrUpdateAchievement(achievement *models.Achi
 func (r *AchievementsRepository) GetAchievementsByUserLogin(userLogin string) ([]models.AchievementsLinks, error) {
 	var achievements []models.AchievementsLinks
 
-	query := r.db.Model(models.AchievementsLinks{}).Where("user_login = ?", userLogin).Preload("Achievement").Find(&achievements)
+	query := r.db.Model(models.AchievementsLinks{}).Where(
+		"user_login = ?",
+		userLogin,
+	).Preload("Achievement").Order("level > 0 DESC, level ASC").Find(&achievements)
 	if query.Error != nil {
 		return nil, query.Error
 	}
@@ -87,7 +95,11 @@ func (r *AchievementsRepository) GetAchievementsByUserLogin(userLogin string) ([
 func (r *AchievementsRepository) GetOneAchievement(userLogin, id string) (*models.AchievementsLinks, error) {
 	var achievement *models.AchievementsLinks
 
-	query := r.db.Model(models.AchievementsLinks{}).Where("user_login = ? AND achievement_code = ?", userLogin, id).Preload("Achievement").First(&achievement)
+	query := r.db.Model(models.AchievementsLinks{}).Where(
+		"user_login = ? AND achievement_code = ?",
+		userLogin,
+		id,
+	).Preload("Achievement").First(&achievement)
 	if query.Error != nil {
 		return nil, query.Error
 	}
@@ -137,7 +149,10 @@ func (r *AchievementsRepository) GetTotalAchievedAchievements(code string, level
 	return count, err
 }
 
-func (r *AchievementsRepository) CreateMultipleRecords(achievements []models.AchievementsLinks) ([]models.AchievementsLinks, error) {
+func (r *AchievementsRepository) CreateMultipleRecords(achievements []models.AchievementsLinks) (
+	[]models.AchievementsLinks,
+	error,
+) {
 	if len(achievements) == 0 {
 		return nil, errors.New("empty ach list")
 	}
