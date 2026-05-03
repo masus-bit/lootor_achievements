@@ -81,10 +81,11 @@ func (r *AchievementsRepository) AddOrUpdateAchievement(achievement *models.Achi
 func (r *AchievementsRepository) GetAchievementsByUserLogin(userLogin string) ([]models.AchievementsLinks, error) {
 	var achievements []models.AchievementsLinks
 
-	query := r.db.Model(models.AchievementsLinks{}).Where(
-		"user_login = ?",
-		userLogin,
-	).Preload("Achievement").Order("level > 0 DESC, level ASC").Find(&achievements)
+	query := r.db.Model(models.AchievementsLinks{}).
+		Where("user_login = ?", userLogin).
+		Preload("Achievement").
+		Order("COALESCE(level, 0) DESC, created_at ASC").
+		Find(&achievements)
 	if query.Error != nil {
 		return nil, query.Error
 	}

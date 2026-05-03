@@ -19,7 +19,10 @@ func NewAchievementsService(achievementsRepo *repositories.AchievementsRepositor
 	}
 }
 
-func (s *AchievementsService) AddOrUpdateAchievement(dto *achievements.AddOrUpdateAchievementRequest) (*achievements.AddOrUpdateAchievementResponse, error) {
+func (s *AchievementsService) AddOrUpdateAchievement(dto *achievements.AddOrUpdateAchievementRequest) (
+	*achievements.AddOrUpdateAchievementResponse,
+	error,
+) {
 	achievementItem, err := s.achievementsRepo.GetAchievementItem(dto.GetCode())
 	if err != nil {
 		return nil, fmt.Errorf("oшибка получения ориг ачивы: %v", err)
@@ -55,7 +58,10 @@ func (s *AchievementsService) AddOrUpdateAchievement(dto *achievements.AddOrUpda
 	return result, nil
 }
 
-func (s *AchievementsService) GetAchievedUserAchievements(dto *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsResponse, error) {
+func (s *AchievementsService) GetAchievedUserAchievements(dto *achievements.GetUserAchievementsRequest) (
+	*achievements.GetUserAchievementsResponse,
+	error,
+) {
 	var allUserAchievements []*achievements.AchievedAchievement
 	userAchievements, err := s.achievementsRepo.GetAchievementsByUserLogin(dto.GetUserLogin())
 	if err != nil {
@@ -71,7 +77,10 @@ func (s *AchievementsService) GetAchievedUserAchievements(dto *achievements.GetU
 
 }
 
-func (s *AchievementsService) GetAllUserAchievements(dto *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsResponse, error) {
+func (s *AchievementsService) GetAllUserAchievements(dto *achievements.GetUserAchievementsRequest) (
+	*achievements.GetUserAchievementsResponse,
+	error,
+) {
 	var allUserAchievements []*achievements.AchievedAchievement
 	userAchievements, err := s.achievementsRepo.GetAchievementsByUserLogin(dto.GetUserLogin())
 	if err != nil {
@@ -95,18 +104,20 @@ func (s *AchievementsService) GetAllUserAchievements(dto *achievements.GetUserAc
 		if userAchievement, exists := achievementsUserMap[achievementID]; exists {
 			temp = s.convertAchievementToProto(&userAchievement, &a)
 		} else {
-			temp = s.convertAchievementToProto(&models.AchievementsLinks{
-				CreatedAt:        time.Time{},
-				UpdatedAt:        time.Time{},
-				ID:               uuid.UUID{},
-				AchievementID:    uuid.UUID{},
-				AchievementCode:  "",
-				UserLogin:        "",
-				Exp:              0,
-				Level:            0,
-				CurrentValueBool: false,
-				CurrentValueInt:  0,
-			}, &a)
+			temp = s.convertAchievementToProto(
+				&models.AchievementsLinks{
+					CreatedAt:        time.Time{},
+					UpdatedAt:        time.Time{},
+					ID:               uuid.UUID{},
+					AchievementID:    uuid.UUID{},
+					AchievementCode:  "",
+					UserLogin:        "",
+					Exp:              0,
+					Level:            0,
+					CurrentValueBool: false,
+					CurrentValueInt:  0,
+				}, &a,
+			)
 		}
 		allUserAchievements = append(allUserAchievements, temp)
 	}
@@ -115,7 +126,10 @@ func (s *AchievementsService) GetAllUserAchievements(dto *achievements.GetUserAc
 
 }
 
-func (s *AchievementsService) GetOneAchievement(dto *achievements.GetOneAchievementRequest) (*achievements.GetOneAchievementResponse, error) {
+func (s *AchievementsService) GetOneAchievement(dto *achievements.GetOneAchievementRequest) (
+	*achievements.GetOneAchievementResponse,
+	error,
+) {
 	achievement, err := s.achievementsRepo.GetOneAchievement(dto.GetUserLogin(), dto.GetId())
 	if err != nil {
 		return nil, fmt.Errorf("ошибка получения ачивы: %v", err)
@@ -134,31 +148,38 @@ func (s *AchievementsService) GetAllAchievementsItems() (*achievements.GetAllAch
 	}
 
 	for _, a := range achievementsItems {
-		resultAchievements = append(resultAchievements, &achievements.AchievementItem{
-			Id:   a.ID.String(),
-			Code: a.Code,
-		})
+		resultAchievements = append(
+			resultAchievements, &achievements.AchievementItem{
+				Id:   a.ID.String(),
+				Code: a.Code,
+			},
+		)
 	}
 	return &achievements.GetAllAchievementsItemsResponse{Achievements: resultAchievements}, nil
 }
 
-func (s *AchievementsService) AddZeroAchievements(dto *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsRequest, error) {
+func (s *AchievementsService) AddZeroAchievements(dto *achievements.GetUserAchievementsRequest) (
+	*achievements.GetUserAchievementsRequest,
+	error,
+) {
 	achievementsItems, err := s.achievementsRepo.GetAllAchievementsItems()
 	if err != nil {
 		return nil, err
 	}
 	var achievementsSlice []models.AchievementsLinks
 	for _, a := range achievementsItems {
-		achievementsSlice = append(achievementsSlice, models.AchievementsLinks{
-			AchievementID:    a.ID,
-			AchievementCode:  a.Code,
-			UserLogin:        dto.UserLogin,
-			Achievement:      a,
-			Exp:              0,
-			Level:            0,
-			CurrentValueInt:  0,
-			CurrentValueBool: false,
-		})
+		achievementsSlice = append(
+			achievementsSlice, models.AchievementsLinks{
+				AchievementID:    a.ID,
+				AchievementCode:  a.Code,
+				UserLogin:        dto.UserLogin,
+				Achievement:      a,
+				Exp:              0,
+				Level:            0,
+				CurrentValueInt:  0,
+				CurrentValueBool: false,
+			},
+		)
 	}
 	_, err = s.achievementsRepo.CreateMultipleRecords(achievementsSlice)
 	if err != nil {
@@ -167,14 +188,21 @@ func (s *AchievementsService) AddZeroAchievements(dto *achievements.GetUserAchie
 	return &achievements.GetUserAchievementsRequest{UserLogin: dto.UserLogin}, nil
 }
 
-func (s *AchievementsService) convertAchievementToProto(link *models.AchievementsLinks, achievement *models.Achievements) *achievements.AchievedAchievement {
-	totalAchieved, err := s.achievementsRepo.GetTotalAchievedAchievements(link.AchievementCode, link.Level)
+func (s *AchievementsService) convertAchievementToProto(
+	link *models.AchievementsLinks,
+	achievement *models.Achievements,
+) *achievements.AchievedAchievement {
+	var totalAchieved int64
+	var linkLevel int
+
+	if link.Level == 0 {
+		linkLevel = 1
+	}
+	totalAchieved, err := s.achievementsRepo.GetTotalAchievedAchievements(link.AchievementCode, linkLevel)
 	if err != nil {
 		totalAchieved = 0
 	}
-	if link.Level == 0 {
-		totalAchieved = 0
-	}
+
 	var id string
 	if link.ID == uuid.Nil {
 		id = ""

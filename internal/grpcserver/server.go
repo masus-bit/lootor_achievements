@@ -17,7 +17,10 @@ func NewAchievementsService(svc *services.AchievementsService) *AchievementsServ
 	return &AchievementsService{service: svc}
 }
 
-func (s *AchievementsService) AddOrUpdateAchievement(ctx context.Context, req *achievements.AddOrUpdateAchievementRequest) (*achievements.AddOrUpdateAchievementResponse, error) {
+func (s *AchievementsService) AddOrUpdateAchievement(
+	ctx context.Context,
+	req *achievements.AddOrUpdateAchievementRequest,
+) (*achievements.AddOrUpdateAchievementResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
@@ -30,7 +33,10 @@ func (s *AchievementsService) AddOrUpdateAchievement(ctx context.Context, req *a
 	return resp, nil
 }
 
-func (s *AchievementsService) GetUserAchievements(ctx context.Context, req *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsResponse, error) {
+func (s *AchievementsService) GetUserAchievements(
+	ctx context.Context,
+	req *achievements.GetUserAchievementsRequest,
+) (*achievements.GetUserAchievementsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
@@ -43,7 +49,10 @@ func (s *AchievementsService) GetUserAchievements(ctx context.Context, req *achi
 	return resp, nil
 }
 
-func (s *AchievementsService) GetAchievedUserAchievements(ctx context.Context, req *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsResponse, error) {
+func (s *AchievementsService) GetAchievedUserAchievements(
+	ctx context.Context,
+	req *achievements.GetUserAchievementsRequest,
+) (*achievements.GetUserAchievementsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
@@ -56,7 +65,10 @@ func (s *AchievementsService) GetAchievedUserAchievements(ctx context.Context, r
 	return resp, nil
 }
 
-func (s *AchievementsService) GetOneAchievement(ctx context.Context, req *achievements.GetOneAchievementRequest) (*achievements.GetOneAchievementResponse, error) {
+func (s *AchievementsService) GetOneAchievement(
+	ctx context.Context,
+	req *achievements.GetOneAchievementRequest,
+) (*achievements.GetOneAchievementResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
@@ -69,7 +81,10 @@ func (s *AchievementsService) GetOneAchievement(ctx context.Context, req *achiev
 	return resp, nil
 }
 
-func (s *AchievementsService) GetAllAchievementsItems(ctx context.Context, req *achievements.GetAllAchievementsItemsRequest) (*achievements.GetAllAchievementsItemsResponse, error) {
+func (s *AchievementsService) GetAllAchievementsItems(
+	ctx context.Context,
+	req *achievements.GetAllAchievementsItemsRequest,
+) (*achievements.GetAllAchievementsItemsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
@@ -82,7 +97,10 @@ func (s *AchievementsService) GetAllAchievementsItems(ctx context.Context, req *
 	return resp, nil
 }
 
-func (s *AchievementsService) AddZeroAchievements(ctx context.Context, req *achievements.GetUserAchievementsRequest) (*achievements.GetUserAchievementsRequest, error) {
+func (s *AchievementsService) AddZeroAchievements(
+	ctx context.Context,
+	req *achievements.GetUserAchievementsRequest,
+) (*achievements.GetUserAchievementsRequest, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
